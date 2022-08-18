@@ -1,10 +1,12 @@
 from datetime import date
+import re
 
 
 def most_tweeted(tweets):
     mas_retweeteados = sorted(tweets, key=lambda d: d['retweetCount'])
     mas_retweeteados = mas_retweeteados[-10:]
     return mas_retweeteados
+
 
 def top_users(tweets):
     tweeteros = dict()
@@ -40,7 +42,20 @@ def top_days(tweets):
     return dias
 
  
-
 def top_hashtags(tweets):
-    pass
+    hashtags = dict()
+    for tweet in tweets:
+        tweet_content = tweet['content']
+        tweet_hashtags = re.findall('(#+[a-zA-Z0-9(_)]{1,})', tweet_content)
+        ## sacado de  https://stackoverflow.com/questions/38506598/regular-expression-to-match-hashtag-but-not-hashtag-with-semicolon
+        for hashtag in tweet_hashtags:
+            if hashtag not in hashtags.keys():
+                hashtags[hashtag] = 1
+            else:
+                hashtags[hashtag] += 1
 
+    hashtags = sorted(hashtags.items(), key=lambda x: x[1], reverse=True)
+    hashtags = hashtags[0:10]
+    
+    
+    return hashtags
